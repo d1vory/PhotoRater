@@ -20,7 +20,13 @@ public class AuthController: ControllerBase
     {
         if (ModelState.IsValid)
         {
-            return Ok("ye everything is good");
+            var isCreated = await _service.RegisterUser(registerUserDto, ModelState);
+            if (!isCreated)
+            {
+                return BadRequest(ModelState.StringifyModelErrors());
+            }
+
+            return Ok("User is registered!");
         }
         
         return BadRequest(ModelState.StringifyModelErrors());
