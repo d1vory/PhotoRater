@@ -15,20 +15,27 @@ public class AuthController: ControllerBase
     }
 
     [HttpPost]
-    [Route("registration")]
+    [Route("registration2")]
     public async Task<ActionResult> Register([FromBody] RegisterUserDTO registerUserDto)
     {
-        if (ModelState.IsValid)
+        if (!ModelState.IsValid) return BadRequest(ModelState.StringifyModelErrors());
+        var isCreated = await _service.RegisterUser(registerUserDto, ModelState);
+        if (!isCreated)
         {
-            var isCreated = await _service.RegisterUser(registerUserDto, ModelState);
-            if (!isCreated)
-            {
-                return BadRequest(ModelState.StringifyModelErrors());
-            }
-
-            return Ok("User is registered!");
+            return BadRequest(ModelState.StringifyModelErrors());
         }
-        
-        return BadRequest(ModelState.StringifyModelErrors());
+
+        return Ok("User is registered!");
+
     }
+
+    [HttpPost]
+    [Route("login2")]
+    public async Task<ActionResult> Login([FromBody] LoginDTO loginDto)
+    {
+        if (!ModelState.IsValid) return BadRequest(ModelState.StringifyModelErrors());
+        var token = await _service.Login(loginDto, ModelState);
+        return Ok("bla");
+    }
+
 }

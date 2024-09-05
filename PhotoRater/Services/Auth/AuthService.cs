@@ -1,5 +1,7 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using NuGet.Protocol;
 using PhotoRater.Areas.Identity.Data;
 using PhotoRater.DTO.Auth;
 
@@ -33,5 +35,14 @@ public class AuthService
         }
 
         return false;
+    }
+
+    public async Task<string> Login(LoginDTO dto, ModelStateDictionary modelState)
+    {
+        _signInManager.AuthenticationScheme =  IdentityConstants.BearerScheme;
+        var signInResult = await _signInManager.PasswordSignInAsync(dto.Username, dto.Password, false, true);
+        
+        return "ad";
+
     }
 }
