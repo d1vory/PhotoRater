@@ -1,12 +1,33 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using PhotoRater.Areas.Identity.Data;
 using PhotoRater.Services.Auth;
 using Task11.Data;
 
 var builder = WebApplication.CreateBuilder(args);
+var configuration = new ConfigurationBuilder()
+    .SetBasePath(builder.Environment.ContentRootPath)
+    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+    .Build();
 
-builder.Services.AddAuthorization();
+//builder.Services.AddAuthorization();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = configuration["JwtSettings:Issuer"],
+            ValidAudience = configuration["JwtSettings:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSettings:SecretKey"]))
+        };
+    });
 builder.Services.AddIdentityApiEndpoints<User>().AddEntityFrameworkStores<ApplicationContext>();
 builder.Services.AddControllers();
 builder.Services.AddAutoMapper(typeof(Program));
@@ -24,6 +45,7 @@ builder.Services.AddCors(options =>
     });
 });
 
+
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -39,10 +61,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
-app.MapIdentityApi<User>();
+//app.MapIdentityApi<User>();
 app.UseHttpsRedirection();
 app.UsePathBase(new PathString("/api"));
 app.UseRouting();
+app.UseAuthorization();
 app.MapControllers();
 app.UseCors();
 
