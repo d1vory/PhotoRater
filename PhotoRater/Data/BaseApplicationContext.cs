@@ -5,6 +5,8 @@ using Task11.Data;
 
 public class BaseApplicationContext: IdentityDbContext<User>
 {
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

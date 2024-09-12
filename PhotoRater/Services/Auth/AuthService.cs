@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using NuGet.Protocol;
 using PhotoRater.Areas.Identity.Data;
@@ -44,12 +45,36 @@ public class AuthService
 
     public async Task<JwtSecurityToken> Login(LoginDTO dto, ModelStateDictionary modelState)
     {
-        _signInManager.AuthenticationScheme =  IdentityConstants.BearerScheme;
+        //_signInManager.AuthenticationScheme =  IdentityConstants.BearerScheme;
         var signInResult = await _signInManager.PasswordSignInAsync(dto.Username, dto.Password, false, true);
         if (!signInResult.Succeeded) throw new ApplicationException("Wrong username or password!");
         var token = GenerateAccessToken(dto.Username);
         return token;
 
+    }
+
+    public async Task<JwtSecurityToken> RefreshLogin(RefreshTokenDTO dto)
+    {
+        var refreshToken = await _db.RefreshTokens
+            .Include(refreshToken => refreshToken.User)
+            .FirstOrDefaultAsync(r => r.Token == dto.RefreshToken);
+        if (refreshToken == null) throw new ApplicationException("Refresh token is not found!");
+        var token = GenerateAccessToken(refreshToken.User.UserName);
+        _db.Remove(refreshToken);
+        await _db.SaveChangesAsync();
+        return token;
+    }
+
+    public async Task<string> GetRefreshToken(string username)
+    {
+        var refreshTokenGuid = Guid.NewGuid().ToString();
+        var expireIn = DateTime.Now + TimeSpan.FromHours(4);
+        var user = await _userManager.FindByNameAsync(username);
+        if (user == null) throw new ApplicationException("User is not found!");
+        var refreshToken = new RefreshToken() { Token = refreshTokenGuid, UserId = user.Id, Expire = expireIn };
+        await _db.RefreshTokens.AddAsync(refreshToken);
+        await _db.SaveChangesAsync();
+        return refreshTokenGuid;
     }
     
     
@@ -60,10 +85,6 @@ public class AuthService
             new Claim(ClaimTypes.Name, username),
             // Add additional claims as needed (e.g., roles, etc.)
         };
-        var a = _configuration["JwtSettings:Issuer"];
-        var b = _configuration["JwtSettings:Audience"];
-        var c = _configuration["JwtSettings:SecretKey"];
-
         var token = new JwtSecurityToken(
             issuer: _configuration["JwtSettings:Issuer"],
             audience: _configuration["JwtSettings:Audience"],

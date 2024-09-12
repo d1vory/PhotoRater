@@ -11,3 +11,9 @@ public class LoginDTO
     [DataType(DataType.Password)]
     public string Password { get; set; }
 }
+
+public class RefreshTokenDTO
+{
+    [Required]
+    public string RefreshToken { get; set; }
+}
