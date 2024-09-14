@@ -5,8 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using NuGet.Protocol;
-using PhotoRater.Areas.Identity.Data;
+using PhotoRater.Models;
 using PhotoRater.DTO.Auth;
 
 namespace PhotoRater.Services.Auth;

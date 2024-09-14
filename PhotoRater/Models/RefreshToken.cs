@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PhotoRater.Areas.Identity.Data;
+namespace PhotoRater.Models;
 
 public class RefreshToken
 {

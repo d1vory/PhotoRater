@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Task11.Data;
 
@@ -11,9 +12,11 @@ using Task11.Data;
 namespace PhotoRater.Data.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20240913185707_PhotoOnRate")]
+    partial class PhotoOnRate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -190,7 +193,7 @@ namespace PhotoRater.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("PhotosOnRate", (string)null);
+                    b.ToTable("PhotosOnRate");
                 });
 
             modelBuilder.Entity("PhotoRater.Areas.Identity.Data.RefreshToken", b =>
@@ -218,7 +221,7 @@ namespace PhotoRater.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("RefreshTokens", (string)null);
+                    b.ToTable("RefreshTokens");
                 });
 
             modelBuilder.Entity("PhotoRater.Areas.Identity.Data.User", b =>

@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using PhotoRater.Areas.Identity.Data;
+using PhotoRater.Models;
+using PhotoRater.Services;
 using PhotoRater.Services.Auth;
 using Task11.Data;
 
@@ -35,6 +36,7 @@ builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddDbContext<BaseApplicationContext, ApplicationContext>(ServiceLifetime.Transient);
 //builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationContext>();
 builder.Services.AddTransient<AuthService>();
+builder.Services.AddTransient<PhotoOnRateService>();
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(b =>
