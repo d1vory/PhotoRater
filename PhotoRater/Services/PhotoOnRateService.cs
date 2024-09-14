@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using AutoMapper;
 using PhotoRater.Models;
 using PhotoRater.DTO;
@@ -9,17 +10,20 @@ public class PhotoOnRateService
     private readonly BaseApplicationContext _db;
     private readonly IMapper _mapper;
     private readonly IWebHostEnvironment _webHostEnvironment;
-
-    public PhotoOnRateService(BaseApplicationContext db, IMapper mapper, IWebHostEnvironment webHostEnvironment)
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    
+    public PhotoOnRateService(BaseApplicationContext db, IMapper mapper, IWebHostEnvironment webHostEnvironment, IHttpContextAccessor httpContextAccessor)
     {
         _db = db;
         _mapper = mapper;
         _webHostEnvironment = webHostEnvironment;
+        _httpContextAccessor = httpContextAccessor;
     }
 
 
     public async Task<PhotoOnRate> CreatePhotoOnRate(CreatePhotoOnRateDTO dto,  IFormFile image)
     {
+        
         var fileName = $"{Guid.NewGuid()}-{Path.GetFileName(image.FileName)}";
         var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "images", fileName);
 
@@ -30,7 +34,9 @@ public class PhotoOnRateService
 
         var imagePath = Path.Combine("images", fileName);
         var photoOnRate = _mapper.Map<PhotoOnRate>(dto);
+        var userId = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier)?.Value;
         photoOnRate.Photo = imagePath;
+        photoOnRate.UserId = userId;
         await _db.PhotosOnRate.AddAsync(photoOnRate);
         await _db.SaveChangesAsync();
         return photoOnRate;

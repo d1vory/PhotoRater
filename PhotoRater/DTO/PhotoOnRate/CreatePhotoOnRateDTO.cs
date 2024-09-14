@@ -2,7 +2,7 @@ namespace PhotoRater.DTO;
 
 public class CreatePhotoOnRateDTO
 {
-    public string UserId { get; set; } = null!;
+    //public string UserId { get; set; } = null!;
     
     //public string? Photo { get; set; }
 

@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PhotoRater.DTO;
 using PhotoRater.Services;
@@ -17,6 +18,7 @@ public class PhotoOnRateController: ControllerBase
     
     
     [HttpPost]
+    [Authorize]
     [Route("upload")]
     public async Task<ActionResult> UploadPhoto([FromForm] CreatePhotoOnRateDTO dto, IFormFile? image)
     {
