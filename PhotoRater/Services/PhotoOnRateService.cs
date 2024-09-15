@@ -2,6 +2,7 @@ using System.Security.Claims;
 using AutoMapper;
 using PhotoRater.Models;
 using PhotoRater.DTO;
+using PhotoRater.Utils;
 
 namespace PhotoRater.Services;
 
@@ -34,7 +35,7 @@ public class PhotoOnRateService
 
         var imagePath = Path.Combine("images", fileName);
         var photoOnRate = _mapper.Map<PhotoOnRate>(dto);
-        var userId = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier)?.Value;
+        var userId = _httpContextAccessor.HttpContext.User.GetUserId();
         photoOnRate.Photo = imagePath;
         photoOnRate.UserId = userId;
         await _db.PhotosOnRate.AddAsync(photoOnRate);
