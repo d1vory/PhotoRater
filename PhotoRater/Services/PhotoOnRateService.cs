@@ -42,4 +42,13 @@ public class PhotoOnRateService
         await _db.SaveChangesAsync();
         return photoOnRate;
     }
+
+    public async Task<IEnumerable<ListPhotoOnRateDTO>> GetMyPhotosList()
+    {
+        var userId = _httpContextAccessor.HttpContext.User.GetUserId();
+        var objects = _db.PhotosOnRate.Where(p => p.UserId == userId);
+        //var kek = await objects.ProjectToListAsync<ListPhotoOnRateDTO>(_mapper.ConfigurationProvider);
+        var kek2 = objects.ProjectToList<ListPhotoOnRateDTO>(_mapper.ConfigurationProvider);
+        return kek2;
+    }
 }

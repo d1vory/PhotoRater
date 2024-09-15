@@ -15,6 +15,15 @@ public class PhotoOnRateController: ControllerBase
     {
         _service = service;
     }
+
+    [HttpGet]
+    [Authorize]
+    [Route("")]
+    public async Task<ActionResult<ListPhotoOnRateDTO>> MyPhotosList()
+    {
+        var photos = await _service.GetMyPhotosList();
+        return Ok(photos);
+    }
     
     
     [HttpPost]
@@ -28,6 +37,7 @@ public class PhotoOnRateController: ControllerBase
         }
 
         var photoOnRate = await _service.CreatePhotoOnRate(dto, image);
+        //TODO return dto!
         return Ok(photoOnRate);
     }
 }
