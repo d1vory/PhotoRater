@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using HttpExceptions.Exceptions;
 
 public class ErrorHandlingMiddleware
 {
@@ -15,11 +16,11 @@ public class ErrorHandlingMiddleware
         {
             await _next.Invoke(context);
         }
-        catch (ApplicationException ex)
+        catch (HttpException ex)
         {
             context.Response.ContentType = "application/json";
-            context.Response.StatusCode = 400;
-            var body = JsonConvert.SerializeObject(new {Message=ex.Message});
+            context.Response.StatusCode = (int)ex.StatusCode;
+            var body = JsonConvert.SerializeObject(new { Message = ex.Message });
             await context.Response.WriteAsync(body);
         }
     }

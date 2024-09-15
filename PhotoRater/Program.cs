@@ -66,6 +66,7 @@ if (app.Environment.IsDevelopment())
 app.UseMiddleware<ErrorHandlingMiddleware>();
 //app.MapIdentityApi<User>();
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 app.UsePathBase(new PathString("/api"));
 app.UseRouting();
 app.UseAuthorization();

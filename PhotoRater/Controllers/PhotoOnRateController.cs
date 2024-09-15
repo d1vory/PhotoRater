@@ -25,6 +25,15 @@ public class PhotoOnRateController: ControllerBase
         return Ok(photos);
     }
     
+    [HttpGet]
+    [Authorize]
+    [Route("{photoId}")]
+    public async Task<ActionResult<ListPhotoOnRateDTO>> MyPhotoDetail([FromRoute] int photoId)
+    {
+        var photo = await _service.GetPhotoDetail(photoId);
+        return Ok(photo);
+    }
+    
     
     [HttpPost]
     [Authorize]

@@ -1,8 +1,10 @@
 using System.Security.Claims;
 using AutoMapper;
+using HttpExceptions.Exceptions;
 using PhotoRater.Models;
 using PhotoRater.DTO;
 using PhotoRater.Utils;
+using Microsoft.EntityFrameworkCore;
 
 namespace PhotoRater.Services;
 
@@ -33,7 +35,7 @@ public class PhotoOnRateService
             await image.CopyToAsync(stream);
         }
 
-        var imagePath = Path.Combine("images", fileName);
+        var imagePath = $"images/{fileName}";
         var photoOnRate = _mapper.Map<PhotoOnRate>(dto);
         var userId = _httpContextAccessor.HttpContext.User.GetUserId();
         photoOnRate.Photo = imagePath;
@@ -48,7 +50,14 @@ public class PhotoOnRateService
         var userId = _httpContextAccessor.HttpContext.User.GetUserId();
         var objects = _db.PhotosOnRate.Where(p => p.UserId == userId);
         //var kek = await objects.ProjectToListAsync<ListPhotoOnRateDTO>(_mapper.ConfigurationProvider);
-        var kek2 = objects.ProjectToList<ListPhotoOnRateDTO>(_mapper.ConfigurationProvider);
-        return kek2;
+        return objects.ProjectToList<ListPhotoOnRateDTO>(_mapper.ConfigurationProvider);
+    }
+
+    public async Task<DetailPhotoOnRateDTO> GetPhotoDetail(int photoId)
+    {
+        var userId = _httpContextAccessor.HttpContext.User.GetUserId();
+        var obj = await _db.PhotosOnRate.FirstOrDefaultAsync(p => p.Id == photoId && p.UserId == userId);
+        if (obj == null) throw new NotFoundException("photo is not found!");
+        return _mapper.Map<DetailPhotoOnRateDTO>(obj);
     }
 }

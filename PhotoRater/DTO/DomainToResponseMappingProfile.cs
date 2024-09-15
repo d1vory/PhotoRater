@@ -15,6 +15,7 @@ public class DomainToResponseMappingProfile: Profile
 
         CreateMap<CreatePhotoOnRateDTO, PhotoOnRate>();
         CreateMap<PhotoOnRate, ListPhotoOnRateDTO>();
+        CreateMap<PhotoOnRate, DetailPhotoOnRateDTO>();
 
     }
     

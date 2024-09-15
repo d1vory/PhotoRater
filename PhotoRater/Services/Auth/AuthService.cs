@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using HttpExceptions.Exceptions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
@@ -46,7 +47,7 @@ public class AuthService
     {
         //_signInManager.AuthenticationScheme =  IdentityConstants.BearerScheme;
         var signInResult = await _signInManager.PasswordSignInAsync(dto.Username, dto.Password, false, true);
-        if (!signInResult.Succeeded) throw new ApplicationException("Wrong username or password!");
+        if (!signInResult.Succeeded) throw new BadRequestException("Wrong username or password!");
         var token = GenerateAccessToken(dto.Username);
         return token;
 
@@ -57,7 +58,7 @@ public class AuthService
         var refreshToken = await _db.RefreshTokens
             .Include(refreshToken => refreshToken.User)
             .FirstOrDefaultAsync(r => r.Token == dto.RefreshToken);
-        if (refreshToken == null) throw new ApplicationException("Refresh token is not found!");
+        if (refreshToken == null) throw new BadRequestException("Refresh token is not found!");
         var token = GenerateAccessToken(refreshToken.User.UserName);
         _db.Remove(refreshToken);
         await _db.SaveChangesAsync();
@@ -69,7 +70,7 @@ public class AuthService
         var refreshTokenGuid = Guid.NewGuid().ToString();
         var expireIn = DateTime.Now + TimeSpan.FromHours(4);
         var user = await _userManager.FindByNameAsync(username);
-        if (user == null) throw new ApplicationException("User is not found!");
+        if (user == null) throw new BadRequestException("User is not found!");
         var refreshToken = new RefreshToken() { Token = refreshTokenGuid, UserId = user.Id, Expire = expireIn };
         await _db.RefreshTokens.AddAsync(refreshToken);
         await _db.SaveChangesAsync();
