@@ -29,6 +29,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSettings:SecretKey"]))
         };
     });
+builder.Services.AddHttpLogging(o => { });
 builder.Services.AddIdentityApiEndpoints<User>().AddEntityFrameworkStores<ApplicationContext>();
 builder.Services.AddControllers();
 builder.Services.AddAutoMapper(typeof(Program));
@@ -70,5 +71,6 @@ app.UseRouting();
 app.UseAuthorization();
 app.MapControllers();
 app.UseCors();
+app.UseHttpLogging();
 
 app.Run();
