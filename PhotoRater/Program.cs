@@ -38,6 +38,7 @@ builder.Services.AddDbContext<BaseApplicationContext, ApplicationContext>(Servic
 //builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationContext>();
 builder.Services.AddTransient<AuthService>();
 builder.Services.AddTransient<PhotoOnRateService>();
+builder.Services.AddTransient<FeedbackService>();
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(b =>

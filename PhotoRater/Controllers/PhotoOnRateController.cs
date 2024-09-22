@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PhotoRater.DTO;
 using PhotoRater.Services;
+using PhotoRater.Utils.Feedback;
 
 namespace PhotoRater.Controllers;
 
@@ -10,10 +11,12 @@ namespace PhotoRater.Controllers;
 public class PhotoOnRateController: ControllerBase
 {
     private readonly PhotoOnRateService _service;
+    private readonly FeedbackService _feedbackService;
 
-    public PhotoOnRateController(PhotoOnRateService service)
+    public PhotoOnRateController(PhotoOnRateService service, FeedbackService feedbackService)
     {
         _service = service;
+        _feedbackService = feedbackService;
     }
 
     [HttpGet]
@@ -48,5 +51,15 @@ public class PhotoOnRateController: ControllerBase
         var photoOnRate = await _service.CreatePhotoOnRate(dto, image);
         //TODO return dto!
         return Ok(photoOnRate);
+    }
+
+
+    [HttpPost]
+    [Authorize]
+    [Route("{photoId}/rate")]
+    public async Task<ActionResult> RatePhoto([FromRoute] int photoId, [FromBody] CreateFeedbackDTO dto)
+    {
+        await _feedbackService.CreateFeedback(photoId, dto);
+        return Ok("success!");
     }
 }
