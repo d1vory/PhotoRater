@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PhotoRater.DTO;
 using PhotoRater.Services;
+using PhotoRater.Utils;
 using PhotoRater.Utils.Feedback;
 
 namespace PhotoRater.Controllers;
@@ -59,6 +60,7 @@ public class PhotoOnRateController: ControllerBase
     [Route("{photoId}/rate")]
     public async Task<ActionResult> RatePhoto([FromRoute] int photoId, [FromBody] CreateFeedbackDTO dto)
     {
+        if (!ModelState.IsValid) return BadRequest(ModelState.StringifyModelErrors());
         await _feedbackService.CreateFeedback(photoId, dto);
         return Ok("success!");
     }

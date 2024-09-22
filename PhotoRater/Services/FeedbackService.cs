@@ -1,4 +1,6 @@
 using AutoMapper;
+using HttpExceptions.Exceptions;
+using Microsoft.EntityFrameworkCore;
 using PhotoRater.Models;
 using PhotoRater.Utils;
 using PhotoRater.Utils.Feedback;
@@ -22,10 +24,7 @@ public class FeedbackService
 
     public async Task<Feedback> CreateFeedback(int photoOnRateId, CreateFeedbackDTO dto)
     {
-        //TODO check whether this photo is liked by this user
-        //TODO check whether this photo exist
-        //TODO check rating range
-
+        await ValidateFeedback(photoOnRateId, dto);
         var userId = _httpContextAccessor.HttpContext.User.GetUserId();
         var feedback = _mapper.Map<Feedback>(dto);
         feedback.ReviewerId = userId;
@@ -33,6 +32,27 @@ public class FeedbackService
         await _db.Feedbacks.AddAsync(feedback);
         await _db.SaveChangesAsync();
         return feedback;
+    }
+
+    private async Task ValidateFeedback(int photoOnRateId, CreateFeedbackDTO dto)
+    {
+        var userId = _httpContextAccessor.HttpContext.User.GetUserId();
+        var photo = await _db.PhotosOnRate.FirstOrDefaultAsync(p => p.Id == photoOnRateId);
+        
+        if (photo == null)
+        {
+            throw new NotFoundException("This photo is not found!");
+        }
+
+        if (photo.UserId == userId)
+        {
+            throw new BadRequestException("Cant feedback own photos!");
+        }
+
+        if (await _db.Feedbacks.AnyAsync(f => f.PhotoOnRateId == photoOnRateId && f.ReviewerId == userId))
+        {
+            throw new BadRequestException("You already reviewed this photo!");
+        }
     }
     
     
