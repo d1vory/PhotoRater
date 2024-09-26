@@ -24,11 +24,5 @@ public class PhotoOnRate
     
     public string Description { get; set; } = "";
     
-    public DateTime CreatedAt
-    {
-        get => _createdAt ?? DateTime.Now;
-        set => _createdAt = value;
-    }
-
-    private DateTime? _createdAt;
+    public DateTime? CreatedAt { get; set; }
 }
