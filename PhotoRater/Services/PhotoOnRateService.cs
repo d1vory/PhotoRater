@@ -58,6 +58,19 @@ public class PhotoOnRateService
         var userId = _httpContextAccessor.HttpContext.User.GetUserId();
         var obj = await _db.PhotosOnRate.FirstOrDefaultAsync(p => p.Id == photoId && p.UserId == userId);
         if (obj == null) throw new NotFoundException("photo is not found!");
-        return _mapper.Map<DetailPhotoOnRateDTO>(obj);
+        var dto = _mapper.Map<DetailPhotoOnRateDTO>(obj);
+        
+        var feedbacks = _db.Feedbacks.Where(f => f.PhotoOnRateId == obj.Id);
+        var averageRating = feedbacks.Average(f => f.DigitalRating); 
+        var maxRating = feedbacks.Max(f => f.DigitalRating); 
+        var minRating = feedbacks.Min(f => f.DigitalRating);
+        var comments = feedbacks.Select(f => f.Comment).ToArray();
+
+        dto.AverageRating = averageRating;
+        dto.MaxRating = maxRating;
+        dto.MinRating = minRating;
+        dto.Comments = comments;
+        
+        return dto;
     }
 }

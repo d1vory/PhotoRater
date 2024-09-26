@@ -9,4 +9,10 @@ public class DetailPhotoOnRateDTO
     
     public DateTime CreatedAt { get; set; }
     
+    public double AverageRating { get; set; }
+    public int MaxRating { get; set; }
+    public int MinRating { get; set; }
+    
+    public string[] Comments { get; set; }
+    
 }
