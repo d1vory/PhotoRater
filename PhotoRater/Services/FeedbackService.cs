@@ -33,6 +33,23 @@ public class FeedbackService
         await _db.SaveChangesAsync();
         return feedback;
     }
+    
+    public async Task<PhotoOnRateFeedbackDTO> GetNextPhotoForRate()
+    {
+        var userId = _httpContextAccessor.HttpContext.User.GetUserId();
+        var photo = (from p in _db.PhotosOnRate
+            join f in _db.Feedbacks on
+                p.Id equals f.PhotoOnRateId into grouping
+            from f in grouping.DefaultIfEmpty()
+            where f.ReviewerId != userId && p.UserId != userId
+            select p).OrderBy(r => Guid.NewGuid()).First();
+        
+        if (photo == null) throw new BadRequestException("There are no photos left to rate!");
+        var dto = _mapper.Map<PhotoOnRateFeedbackDTO>(photo);
+        
+        return dto;
+
+    }
 
     private async Task ValidateFeedback(int photoOnRateId, CreateFeedbackDTO dto)
     {
@@ -54,7 +71,5 @@ public class FeedbackService
             throw new BadRequestException("You already reviewed this photo!");
         }
     }
-    
-    
     
 }

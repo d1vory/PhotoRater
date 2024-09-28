@@ -53,15 +53,5 @@ public class PhotoOnRateController: ControllerBase
         //TODO return dto!
         return Ok(photoOnRate);
     }
-
-
-    [HttpPost]
-    [Authorize]
-    [Route("{photoId}/rate")]
-    public async Task<ActionResult> RatePhoto([FromRoute] int photoId, [FromBody] CreateFeedbackDTO dto)
-    {
-        if (!ModelState.IsValid) return BadRequest(ModelState.StringifyModelErrors());
-        await _feedbackService.CreateFeedback(photoId, dto);
-        return Ok("success!");
-    }
+    
 }
