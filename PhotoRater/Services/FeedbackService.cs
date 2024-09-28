@@ -37,12 +37,12 @@ public class FeedbackService
     public async Task<PhotoOnRateFeedbackDTO> GetNextPhotoForRate()
     {
         var userId = _httpContextAccessor.HttpContext.User.GetUserId();
-        var photo = (from p in _db.PhotosOnRate
+        var photo = await (from p in _db.PhotosOnRate
             join f in _db.Feedbacks on
                 p.Id equals f.PhotoOnRateId into grouping
             from f in grouping.DefaultIfEmpty()
             where f.ReviewerId != userId && p.UserId != userId
-            select p).OrderBy(r => Guid.NewGuid()).First();
+            select p).OrderBy(r => Guid.NewGuid()).FirstAsync();
         
         if (photo == null) throw new BadRequestException("There are no photos left to rate!");
         var dto = _mapper.Map<PhotoOnRateFeedbackDTO>(photo);
