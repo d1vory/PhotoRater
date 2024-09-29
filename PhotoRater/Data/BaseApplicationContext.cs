@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PhotoRater.Models;
+using PhotoRater.Models.Directory;
 using Task11.Data;
 
 public class BaseApplicationContext: IdentityDbContext<User>
@@ -8,6 +9,11 @@ public class BaseApplicationContext: IdentityDbContext<User>
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<PhotoOnRate> PhotosOnRate { get; set; }
     public DbSet<Feedback> Feedbacks { get; set; }
+    
+    
+    public DbSet<Status> Statuses { get; set; }
+    
+    
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

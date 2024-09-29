@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using PhotoRater.Models.Directory;
 
 namespace PhotoRater.Models;
 
@@ -23,6 +24,11 @@ public class PhotoOnRate
     public string Name { get; set; }
     
     public string Description { get; set; } = "";
+
+    public int StatusId { get; set; } = 2;
+    
+    [ForeignKey("StatusId")]
+    public Status Status { get; set; }
     
     public DateTime? CreatedAt { get; set; }
     
