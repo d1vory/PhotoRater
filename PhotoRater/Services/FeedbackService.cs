@@ -7,21 +7,12 @@ using PhotoRater.Utils.Feedback;
 
 namespace PhotoRater.Services;
 
-public class FeedbackService
+public class FeedbackService: BaseService
 {
-    private readonly BaseApplicationContext _db;
-    private readonly IMapper _mapper;
-    private readonly IWebHostEnvironment _webHostEnvironment;
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    
-    public FeedbackService(BaseApplicationContext db, IMapper mapper, IWebHostEnvironment webHostEnvironment, IHttpContextAccessor httpContextAccessor)
+    public FeedbackService(BaseApplicationContext db, IMapper mapper, IWebHostEnvironment webHostEnvironment, IHttpContextAccessor httpContextAccessor) : base(db, mapper, webHostEnvironment, httpContextAccessor)
     {
-        _db = db;
-        _mapper = mapper;
-        _webHostEnvironment = webHostEnvironment;
-        _httpContextAccessor = httpContextAccessor;
     }
-
+    
     public async Task<Feedback> CreateFeedback(int photoOnRateId, CreateFeedbackDTO dto)
     {
         await ValidateFeedback(photoOnRateId, dto);
@@ -71,5 +62,4 @@ public class FeedbackService
             throw new BadRequestException("You already reviewed this photo!");
         }
     }
-    
 }

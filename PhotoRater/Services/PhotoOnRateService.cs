@@ -8,21 +8,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PhotoRater.Services;
 
-public class PhotoOnRateService
+public class PhotoOnRateService: BaseService
 {
-    private readonly BaseApplicationContext _db;
-    private readonly IMapper _mapper;
-    private readonly IWebHostEnvironment _webHostEnvironment;
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    
-    public PhotoOnRateService(BaseApplicationContext db, IMapper mapper, IWebHostEnvironment webHostEnvironment, IHttpContextAccessor httpContextAccessor)
+    public PhotoOnRateService(BaseApplicationContext db, IMapper mapper, IWebHostEnvironment webHostEnvironment, IHttpContextAccessor httpContextAccessor) : base(db, mapper, webHostEnvironment, httpContextAccessor)
     {
-        _db = db;
-        _mapper = mapper;
-        _webHostEnvironment = webHostEnvironment;
-        _httpContextAccessor = httpContextAccessor;
     }
-
 
     public async Task<PhotoOnRate> CreatePhotoOnRate(CreatePhotoOnRateDTO dto,  IFormFile image)
     {
@@ -73,4 +63,6 @@ public class PhotoOnRateService
         
         return dto;
     }
+
+
 }

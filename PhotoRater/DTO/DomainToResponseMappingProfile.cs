@@ -15,6 +15,7 @@ public class DomainToResponseMappingProfile: Profile
         // CreateMap<CreateOperationTypeDto, Models.OperationType>();
         // CreateMap<UpdateOperationTypeDto, Models.OperationType>();
         CreateMap<RegisterUserDTO, User>();
+        CreateMap<User, UserMeDTO>();
         
         CreateMap<CreatePhotoOnRateDTO, PhotoOnRate>();
         CreateMap<PhotoOnRate, ListPhotoOnRateDTO>();
