@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using AutoMapper;
 using HttpExceptions.Exceptions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -17,18 +18,20 @@ public class AuthService
     private readonly SignInManager<User> _signInManager;
     private readonly BaseApplicationContext _db;
     protected readonly IConfiguration _configuration;
+    private readonly IMapper _mapper;
     
-    public AuthService(BaseApplicationContext db, UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration configuration)
+    public AuthService(BaseApplicationContext db, UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration configuration, IMapper mapper)
     {
         _db = db;
         _userManager = userManager;
         _signInManager = signInManager;
         _configuration = configuration;
+        _mapper = mapper;
     }
 
     public async Task<bool> RegisterUser(RegisterUserDTO dto,  ModelStateDictionary modelState)
     {
-        var user = new User() { Email = dto.Email, UserName = dto.Username };
+        var user = _mapper.Map<User>(dto);
         var res = await _userManager.CreateAsync(user, dto.Password);
         if (res.Succeeded)
         {

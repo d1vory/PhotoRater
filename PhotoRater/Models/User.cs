@@ -9,5 +9,9 @@ namespace PhotoRater.Models;
 // Add profile data for application users by adding properties to the User class
 public class User : IdentityUser
 {
+    public int Karma { get; set; } = 0;
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    
 }
 

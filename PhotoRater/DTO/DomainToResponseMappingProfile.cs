@@ -1,6 +1,7 @@
 using AutoMapper;
 using PhotoRater.Models;
 using PhotoRater.DTO;
+using PhotoRater.DTO.Auth;
 using PhotoRater.Utils.Feedback;
 
 namespace PhotoRater.Utils;
@@ -13,7 +14,8 @@ public class DomainToResponseMappingProfile: Profile
         // CreateMap<Models.OperationType, OperationTypeDto>();
         // CreateMap<CreateOperationTypeDto, Models.OperationType>();
         // CreateMap<UpdateOperationTypeDto, Models.OperationType>();
-
+        CreateMap<RegisterUserDTO, User>();
+        
         CreateMap<CreatePhotoOnRateDTO, PhotoOnRate>();
         CreateMap<PhotoOnRate, ListPhotoOnRateDTO>();
         CreateMap<PhotoOnRate, DetailPhotoOnRateDTO>();
