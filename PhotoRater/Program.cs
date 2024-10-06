@@ -40,6 +40,7 @@ builder.Services.AddTransient<AuthService>();
 builder.Services.AddTransient<PhotoOnRateService>();
 builder.Services.AddTransient<FeedbackService>();
 builder.Services.AddTransient<UserService>();
+builder.Services.AddTransient<DirectoryService>();
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(b =>

@@ -2,7 +2,7 @@ using AutoMapper;
 
 namespace PhotoRater.Services;
 
-public class BaseService
+public abstract class BaseService
 {
     protected readonly BaseApplicationContext _db;
     protected readonly IMapper _mapper;
