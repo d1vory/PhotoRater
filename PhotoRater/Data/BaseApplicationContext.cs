@@ -12,6 +12,7 @@ public class BaseApplicationContext: IdentityDbContext<User>
     
     
     public DbSet<Status> Statuses { get; set; }
+    public DbSet<Tag> Tags { get; set; }
     
     
     

@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using PhotoRater.Models.Directory;
 
 namespace PhotoRater.Models;
 
@@ -22,4 +23,6 @@ public class Feedback
     public int DigitalRating { get; set; }
     
     public string Comment { get; set; } = "";
+
+    public List<Tag> Tags { get; set; } = [];
 }
