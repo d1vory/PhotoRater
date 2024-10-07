@@ -8,4 +8,6 @@ public class CreateFeedbackDTO
     public int DigitalRating { get; set; }
     
     public string Comment { get; set; } = "";
+
+    public int[] Tags { get; set; } = [];
 }

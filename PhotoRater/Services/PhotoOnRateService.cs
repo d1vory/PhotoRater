@@ -5,6 +5,7 @@ using PhotoRater.Models;
 using PhotoRater.DTO;
 using PhotoRater.Utils;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace PhotoRater.Services;
 
@@ -50,17 +51,29 @@ public class PhotoOnRateService: BaseService
         if (obj == null) throw new NotFoundException("photo is not found!");
         var dto = _mapper.Map<DetailPhotoOnRateDTO>(obj);
         
-        var feedbacks = _db.Feedbacks.Where(f => f.PhotoOnRateId == obj.Id);
-        var averageRating = feedbacks.Average(f => f.DigitalRating); 
-        var maxRating = feedbacks.Max(f => f.DigitalRating); 
-        var minRating = feedbacks.Min(f => f.DigitalRating);
+        var feedbacks = _db.Feedbacks.Include(f => f.Tags).Where(f => f.PhotoOnRateId == obj.Id);
+        var maxRating = 0;
+        var minRating = 0;
+        double averageRating = 0;
+        if (feedbacks.Any())
+        {
+            averageRating = feedbacks.Average(f => f.DigitalRating); 
+            maxRating = feedbacks.Max(f => f.DigitalRating); 
+            minRating = feedbacks.Min(f => f.DigitalRating);
+        }
+
         var comments = feedbacks.Select(f => f.Comment).ToArray();
 
+
+        var tagsQuantityQuery = feedbacks.SelectMany(f => f.Tags).GroupBy(t => t.Id).Select(x => new { x.Key, Count = x.Count() });
+        var tagsQuantity = tagsQuantityQuery.AsEnumerable().ToDictionary(kvp => kvp.Key, kvp => kvp.Count);
+
+        
         dto.AverageRating = averageRating;
         dto.MaxRating = maxRating;
         dto.MinRating = minRating;
         dto.Comments = comments;
-        
+        dto.TagsQuantity = tagsQuantity;
         return dto;
     }
 

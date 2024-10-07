@@ -14,5 +14,6 @@ public class DetailPhotoOnRateDTO
     public int MinRating { get; set; }
     
     public string[] Comments { get; set; }
-    
+    public Dictionary<int, int> TagsQuantity { get; set; } = new Dictionary<int, int>();
+
 }

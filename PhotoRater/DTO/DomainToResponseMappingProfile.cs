@@ -20,11 +20,13 @@ public class DomainToResponseMappingProfile: Profile
         CreateMap<User, UserMeDTO>();
         
         CreateMap<CreatePhotoOnRateDTO, PhotoOnRate>();
-        CreateMap<PhotoOnRate, ListPhotoOnRateDTO>();
+        CreateMap<PhotoOnRate, ListPhotoOnRateDTO>().ForMember(x => x.Feedbacks, opt => opt.Ignore());;
         CreateMap<PhotoOnRate, DetailPhotoOnRateDTO>();
         CreateMap<PhotoOnRate, PhotoOnRateFeedbackDTO>();
 
-        CreateMap<CreateFeedbackDTO, Models.Feedback>();
+        CreateMap<CreateFeedbackDTO, Feedback>()
+            //.ForSourceMember(x => x.Tags, opt => opt.DoNotValidate());
+            .ForMember(x => x.Tags, opt => opt.Ignore());
 
         CreateMap<Tag, TagDTO>();
         CreateMap<Status, StatusDTO>();

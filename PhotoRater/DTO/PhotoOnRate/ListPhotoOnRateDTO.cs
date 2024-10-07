@@ -7,4 +7,5 @@ public class ListPhotoOnRateDTO
     public string Name { get; set; }
     
     public DateTime CreatedAt { get; set; }
+    public int Feedbacks { get; set; } = 0;
 }

@@ -17,6 +17,7 @@ public class FeedbackService: BaseService
     public async Task<Feedback> CreateFeedback(int photoOnRateId, CreateFeedbackDTO dto)
     {
         await ValidateFeedback(photoOnRateId, dto);
+        var tags = await ValidateTags(dto.Tags);
         var userId = _httpContextAccessor.HttpContext.User.GetUserId();
         var reviewer = await _db.Users.FindAsync(userId);
         if (reviewer == null)
@@ -26,6 +27,7 @@ public class FeedbackService: BaseService
         var feedback = _mapper.Map<Feedback>(dto);
         feedback.ReviewerId = userId;
         feedback.PhotoOnRateId = photoOnRateId;
+        feedback.Tags = tags;
         await _db.Feedbacks.AddAsync(feedback);
         if (reviewer.Karma <= User.MaxKarma)
         {
@@ -80,5 +82,11 @@ public class FeedbackService: BaseService
         {
             throw new BadRequestException("You already reviewed this photo!");
         }
+    }
+
+    private async Task<List<Tag>> ValidateTags(int[] tagIds)
+    {
+        var tags = await _db.Tags.Where(t => tagIds.Contains(t.Id)).ToListAsync();
+        return tags;
     }
 }
