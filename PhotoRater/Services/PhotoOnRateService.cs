@@ -39,9 +39,15 @@ public class PhotoOnRateService: BaseService
     public async Task<IEnumerable<ListPhotoOnRateDTO>> GetMyPhotosList()
     {
         var userId = _httpContextAccessor.HttpContext.User.GetUserId();
-        var objects = _db.PhotosOnRate.Where(p => p.UserId == userId);
-        //var kek = await objects.ProjectToListAsync<ListPhotoOnRateDTO>(_mapper.ConfigurationProvider);
-        return objects.ProjectToList<ListPhotoOnRateDTO>(_mapper.ConfigurationProvider);
+        var objects = await _db.PhotosOnRate.Include(p => p.Feedbacks).Where(p => p.UserId == userId).ToListAsync();
+        
+        var projectedObjects = _mapper.Map<List<ListPhotoOnRateDTO>>(objects);
+        for (int i = 0; i < projectedObjects.Count; i++)
+        {
+            projectedObjects[i].Feedbacks = objects[i].Feedbacks.Count;
+        }
+
+        return projectedObjects;
     }
 
     public async Task<DetailPhotoOnRateDTO> GetPhotoDetail(int photoId)
